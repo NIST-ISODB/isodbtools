@@ -2,4 +2,4 @@ click~=7.1
 pre-commit~=2.5
 pylint~=2.5.0
 requests~=2.24.0
-git~=3.0
+gitpython~=3.1.3

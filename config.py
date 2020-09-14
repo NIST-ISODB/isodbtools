@@ -92,3 +92,13 @@ def json_writer(filename, data):
         json.dump(data, output, ensure_ascii=False, sort_keys=True,
                   indent=4)  # formatting rules
         output.write('\n')  # new line at EOF
+
+
+def clean_json(filename):
+    """Read in JSON and output according to ISODB specs"""
+    print('operate on filename: ', filename)
+    with open(filename, mode='r') as infile:
+        isotherm_data = json.load(infile)
+    os.rename(filename, filename + '.bak')
+    json_writer(filename, isotherm_data)
+    os.remove(filename + '.bak')

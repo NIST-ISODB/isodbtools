@@ -12,7 +12,7 @@ import requests
 import click
 import git
 
-from config import API_HOST, DOI_MAPPING_PATH, SCRIPT_PATH, canonical_keys, JSON_FOLDER, HEADERS, doi_stub_rules, json_writer, pressure_units
+from config import API_HOST, DOI_MAPPING_PATH, SCRIPT_PATH, canonical_keys, JSON_FOLDER, HEADERS, doi_stub_rules, json_writer, pressure_units, clean_json
 from bibliography_operations import generate_bibliography, regenerate_bibliography
 from adsorbents_operations import fix_adsorbent_id, regenerate_adsorbents
 from adsorbates_operations import fix_adsorbate_id, regenerate_adsorbates
@@ -35,14 +35,9 @@ def tester_fcn():
 
 @cli.command('clean_json')
 @click.argument('filename', type=click.Path(exists=True), nargs=1)
-def clean_json(filename):
-    """Read in JSON and output according to ISODB specs"""
-    print('operate on filename: ', filename)
-    with open(filename, mode='r') as infile:
-        isotherm_data = json.load(infile)
-    os.rename(filename, filename + '.bak')
-    json_writer(filename, isotherm_data)
-    os.remove(filename + '.bak')
+def clean_json_runner(filename):
+    """Run the clean json function"""
+    clean_json(filename)
 
 
 @cli.command('download_isotherm')

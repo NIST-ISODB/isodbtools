@@ -10,7 +10,7 @@ import copy
 import glob
 import requests
 
-from config import API_HOST, HEADERS, JSON_FOLDER, TEXTENCODE, doi_stub_rules, json_writer
+from .config import API_HOST, HEADERS, JSON_FOLDER, TEXTENCODE, doi_stub_rules, json_writer
 
 
 def regenerate_bibliography():

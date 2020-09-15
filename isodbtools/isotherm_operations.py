@@ -8,10 +8,10 @@ import time
 import copy
 import requests
 
-from config import API_HOST, HEADERS, JSON_FOLDER, DOI_MAPPING_PATH, doi_stub_rules, \
+from .config import API_HOST, HEADERS, JSON_FOLDER, DOI_MAPPING_PATH, doi_stub_rules, \
     json_writer, pressure_units, canonical_keys
-from adsorbates_operations import fix_adsorbate_id
-from adsorbents_operations import fix_adsorbent_id
+from .adsorbates_operations import fix_adsorbate_id
+from .adsorbents_operations import fix_adsorbent_id
 
 
 def download_isotherm(isotherm):

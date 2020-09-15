@@ -5,11 +5,11 @@
 import click
 import git
 
-from config import API_HOST, SCRIPT_PATH, canonical_keys, clean_json
-from bibliography_operations import generate_bibliography, regenerate_bibliography
-from adsorbents_operations import regenerate_adsorbents
-from adsorbates_operations import regenerate_adsorbates
-from isotherm_operations import download_isotherm, regenerate_isotherm_library, post_process
+from .config import API_HOST, SCRIPT_PATH, canonical_keys, clean_json
+from .bibliography_operations import generate_bibliography, regenerate_bibliography
+from .adsorbents_operations import regenerate_adsorbents
+from .adsorbates_operations import regenerate_adsorbates
+from .isotherm_operations import download_isotherm, regenerate_isotherm_library, post_process
 
 
 @click.group()

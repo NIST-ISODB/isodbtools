@@ -7,7 +7,7 @@ import time
 import copy
 import requests
 
-from config import API_HOST, HEADERS, JSON_FOLDER, json_writer
+from .config import API_HOST, HEADERS, JSON_FOLDER, json_writer
 
 
 def fix_adsorbent_id(adsorbent_input):

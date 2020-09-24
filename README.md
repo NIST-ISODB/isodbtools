@@ -24,3 +24,14 @@ To use this repository:
     ```
 
 Note: The pre-commit hooks will auto-format your code contributions and perform basic consistency checks.
+
+## Installation as a Python Package
+
+To install this package locally:
+    ```
+    pip install git+https://github.com/dwsideriusNIST/isodbtools.git#egg=isodbtools
+    ```
+Then the package can be import via
+    ```
+    import isodbtools
+    ```

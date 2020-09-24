@@ -3,6 +3,7 @@
 """
 import os
 import json
+import requests
 
 # Global Variables
 API_HOST = 'https://adsorption.nist.gov'
@@ -14,6 +15,19 @@ SCRIPT_PATH = os.path.split(os.path.realpath(__file__))[0]
 ROOT_DIR = os.getcwd()
 DOI_MAPPING_PATH = os.path.join(ROOT_DIR, 'DOI_mapping.csv')
 JSON_FOLDER = os.path.join(ROOT_DIR, 'Library')
+
+# Mapping rules
+KEYS_API_MAPPING = {
+    'isothermType': '/isotherm-type-map.json',
+    'category': '/category-type-map.json',
+    'concentrationUnits': '/concentration-unit-map.json',
+    'compositionType': '/composition-type-map.json',
+}
+
+MAPS = {}
+for item, url in KEYS_API_MAPPING.items():
+    json_data = requests.get(API_HOST + '/isodb/api' + url).json()
+    MAPS[item] = {'json': json_data}
 
 # Character Substitution Rules for Converting the DOI to a stub
 doi_stub_rules = [

@@ -18,7 +18,7 @@ JSON_FOLDER = os.path.join(ROOT_DIR, 'Library')
 
 # Mapping rules
 KEYS_API_MAPPING = {
-    'isothermType': '/isotherm-type-map.json',
+    'isotherm_type': '/isotherm-type-map.json',
     'category': '/category-type-map.json',
     'concentrationUnits': '/concentration-unit-map.json',
     'compositionType': '/composition-type-map.json',

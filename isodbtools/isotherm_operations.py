@@ -9,7 +9,7 @@ import copy
 import requests
 
 from .config import API_HOST, HEADERS, JSON_FOLDER, DOI_MAPPING_PATH, doi_stub_rules, \
-    json_writer, pressure_units, canonical_keys
+    json_writer, pressure_units, canonical_keys, MAPS
 from .adsorbates_operations import fix_adsorbate_id
 from .adsorbents_operations import fix_adsorbent_id
 
@@ -120,8 +120,12 @@ def post_process(filename):
     """Function to process raw isotherm to ISDOB upload format"""
     with open(filename, mode='r') as infile:
         isotherm = json.load(infile)
-    #print('before')
-    #pprint.pprint(isotherm)
+    # First-pass translation of keys based on maps provided by API
+    for key in MAPS:
+        for item in MAPS[key]['json']:
+            if isotherm[key].lower() == item['name'].lower():
+                isotherm[key] = item['shortname']
+
     # Check for adsorbate InChIKey(s)
     #  a. isotherm metadata
     adsorbates = isotherm['adsorbates']
@@ -174,16 +178,23 @@ def post_process(filename):
     if raw_units == 'RELATIVE':
         try:
             p_conversion = isotherm['saturationPressure']
-        except:
-            raise Exception(
+        except KeyError as error_handler:
+            raise KeyError(
                 'RELATIVE pressure units declared; must specify saturationPressure (in bar)'
-            )
+            ) from error_handler
+        try:
+            p_conversion = float(p_conversion)
+        except ValueError as error_handler:
+            raise ValueError(
+                'RELATIVE pressure units declared; must specify saturationPressure (in bar)'
+            ) from error_handler
     else:
         try:
             p_conversion = pressure_units[
                 raw_units]  # conversion from raw_units to bar
-        except:
-            raise Exception('Unknown pressure units: ', raw_units)
+        except TypeError as error_handler:
+            raise TypeError('Unknown pressure units: ',
+                            raw_units) from error_handler
     try:
         log_scale = isotherm['log_scale']
     except KeyError:
@@ -193,10 +204,10 @@ def post_process(filename):
             # Convert from log (assume base-10) to bar pressure
             try:
                 point['pressure'] = (10.0**point['pressure']) * p_conversion
-            except ValueError:
-                raise Exception(
+            except ValueError as error_handler:
+                raise ValueError(
                     'ERROR: unable to convert log-scale pressure: ',
-                    point['pressure'])
+                    point['pressure']) from error_handler
         else:
             # Otherwise, just convert bar pressure
             point['pressure'] = point['pressure'] * p_conversion

@@ -4,6 +4,9 @@
 import os
 import json
 import requests
+import requests_cache
+
+requests_cache.install_cache('api_map_cache')
 
 # Global Variables
 API_HOST = 'https://adsorption.nist.gov'

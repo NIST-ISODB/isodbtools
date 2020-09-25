@@ -22,6 +22,7 @@ KEYS_API_MAPPING = {
     'category': '/category-type-map.json',
     'concentrationUnits': '/concentration-unit-map.json',
     'compositionType': '/composition-type-map.json',
+    'pressureUnits': '/pressure-units-map.json'
 }
 
 MAPS = {}

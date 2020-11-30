@@ -29,7 +29,7 @@ Note: The pre-commit hooks will auto-format your code contributions and perform 
 
 To install this package locally:
     ```
-    pip install git+https://github.com/dwsideriusNIST/isodbtools.git#egg=isodbtools
+    pip install git+https://github.com/NIST-ISODB/isodbtools.git#egg=isodbtools
     ```
 Then the package can be import via
     ```

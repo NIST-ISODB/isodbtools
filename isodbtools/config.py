@@ -103,6 +103,15 @@ canonical_keys = [
 ]
 
 
+# Function to generate a DOI stub from a DOI
+def doi_stub_generator(input_doi):
+    """Generate the DOI_stub for an input DOI"""
+    doi_stub = input_doi
+    for rule in doi_stub_rules:
+        doi_stub = doi_stub.replace(rule['old'], rule['new'])
+    return doi_stub
+
+
 # Wrapper function for JSON writes to ensure consistency in formatting
 def json_writer(filename, data):
     """Format JSON according to ISODB specs"""

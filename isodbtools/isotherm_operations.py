@@ -61,6 +61,7 @@ def regenerate_isotherm_library():
         doi_stub = article['DOI']
         for rule in doi_stub_rules:
             doi_stub = doi_stub.replace(rule['old'], rule['new'])
+        doi_stub = doi_stub.lower()
 
         num_isotherms = len(article['isotherms'])
         # print(doi, doi_stub, num_isotherms)

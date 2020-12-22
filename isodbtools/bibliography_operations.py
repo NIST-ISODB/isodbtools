@@ -35,6 +35,7 @@ def regenerate_bibliography():
         doi_stub = biblio['DOI']
         for rule in doi_stub_rules:
             doi_stub = doi_stub.replace(rule['old'], rule['new'])
+        doi_stub = doi_stub.lower()
         url = API_HOST + '/isodb/api/biblio/' + doi + '.json'
         url = url.replace('%', '%25')  # make this substitution first
         url = url.replace('+', '%252B')
@@ -245,6 +246,7 @@ def generate_bibliography(folder, simulate_api=False):
         doi_stub = doi
         for rule in doi_stub_rules:
             doi_stub = doi_stub.replace(rule['old'], rule['new'])
+        doi_stub = doi_stub.lower()
 
         if not simulate_api:
             # Write the bibliography file for database admin

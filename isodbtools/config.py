@@ -109,6 +109,7 @@ def doi_stub_generator(input_doi):
     doi_stub = input_doi
     for rule in doi_stub_rules:
         doi_stub = doi_stub.replace(rule['old'], rule['new'])
+    doi_stub = doi_stub.lower()
     return doi_stub
 
 

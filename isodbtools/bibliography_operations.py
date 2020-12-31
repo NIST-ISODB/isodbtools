@@ -10,11 +10,18 @@ import copy
 import glob
 import requests
 
-from .config import API_HOST, HEADERS, JSON_FOLDER, TEXTENCODE, doi_stub_rules, json_writer
+from .config import API_HOST, HEADERS, JSON_FOLDER, TEXTENCODE, doi_stub_rules, \
+    json_writer, TRACKER_SUFFIX
 
 
-def regenerate_bibliography():
+def regenerate_bibliography(api_tracking=True):
     """Generate the entire ISODB library from the API"""
+    # Set or disable API usage tracking
+    if api_tracking:
+        url_suffix = ''
+    else:
+        url_suffix = TRACKER_SUFFIX
+
     # Create the JSON Library folder if necessary
     if not os.path.exists(JSON_FOLDER):
         os.mkdir(JSON_FOLDER)
@@ -25,7 +32,7 @@ def regenerate_bibliography():
         os.mkdir(biblio_folder)
 
     # Generate a list of adsorbents from the MATDB API
-    url = API_HOST + '/isodb/api/biblios.json'
+    url = API_HOST + '/isodb/api/biblios.json' + url_suffix
     bibliography = json.loads(requests.get(url, headers=HEADERS).content)
     print(len(bibliography), 'Bibliography Entries')
 
@@ -36,7 +43,7 @@ def regenerate_bibliography():
         for rule in doi_stub_rules:
             doi_stub = doi_stub.replace(rule['old'], rule['new'])
         doi_stub = doi_stub.lower()
-        url = API_HOST + '/isodb/api/biblio/' + doi + '.json'
+        url = API_HOST + '/isodb/api/biblio/' + doi + '.json' + url_suffix
         url = url.replace('%', '%25')  # make this substitution first
         url = url.replace('+', '%252B')
         try:
@@ -134,8 +141,9 @@ def generate_bibliography(folder, simulate_api=False):
         try:
             url = 'https://doi.org/' + doi
             bib_info = json.loads(requests.get(url, headers=HEADERS).content)
-        except ValueError:
-            raise RuntimeError('ERROR: DOI problem for:' + doi)
+        except ValueError as error_handler:
+            raise RuntimeError('ERROR: DOI problem for:' +
+                               doi) from error_handler
         title = bib_info['title'].encode(TEXTENCODE).decode()
         journal = (bib_info['container-title'].replace(
             '.', '').encode(TEXTENCODE).lower().decode())
@@ -174,9 +182,9 @@ def generate_bibliography(folder, simulate_api=False):
                 given_names = extract_names(author['given'])
                 block['given_name'] = unicodedata.normalize(
                     'NFKC', given_names['given'])
-            except ValueError:
+            except ValueError as error_handler:
                 raise Exception('Error parsing author block: ' + author +
-                                '\n for DOI: ' + doi)
+                                '\n for DOI: ' + doi) from error_handler
             if given_names['middle'] is not None:
                 block['middle_name'] = unicodedata.normalize(
                     'NFKC', given_names['middle'])

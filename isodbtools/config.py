@@ -13,6 +13,7 @@ API_HOST = 'https://adsorption.nist.gov'
 HEADERS = {'Accept': 'application/citeproc+json'}  # JSON Headers
 TEXTENCODE = 'utf-8'
 CANONICALIZE = 'NFKC'
+TRACKER_SUFFIX = '&k=dontrackmeplease'
 
 SCRIPT_PATH = os.path.split(os.path.realpath(__file__))[0]
 ROOT_DIR = os.getcwd()

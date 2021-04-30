@@ -9,7 +9,7 @@ import copy
 import requests
 
 from .config import API_HOST, HEADERS, JSON_FOLDER, DOI_MAPPING_PATH, doi_stub_rules, \
-    json_writer, pressure_units, canonical_keys, MAPS
+    json_writer, pressure_units, canonical_keys, MAPS, TRACKER_SUFFIX
 from .adsorbates_operations import fix_adsorbate_id
 from .adsorbents_operations import fix_adsorbent_id
 
@@ -24,19 +24,26 @@ def download_isotherm(isotherm):
     json_writer(isotherm, isotherm_data)
 
 
-def regenerate_isotherm_library():
+def regenerate_isotherm_library(api_tracking=True):
+    # pylint: disable-msg=too-many-locals
     """Generate the entire ISODB library from the API"""
+    # Set or disable API usage tracking
+    if api_tracking:
+        url_suffix = ''
+    else:
+        url_suffix = TRACKER_SUFFIX
+
     # Create the JSON Library folder if necessary
     if not os.path.exists(JSON_FOLDER):
         os.mkdir(JSON_FOLDER)
 
     # Generate a DOI list from the ISODB API
-    url = API_HOST + '/isodb/api/biblio.json'
+    url = API_HOST + '/isodb/api/biblio.json' + url_suffix
     bibliography = json.loads(requests.get(url, headers=HEADERS).content)
     print(len(bibliography), 'Bibliography Entries')
 
     # Count isotherms for DOIs in the database
-    url = API_HOST + '/isodb/api/isotherms.json'
+    url = API_HOST + '/isodb/api/isotherms.json' + url_suffix
     isotherms_list = json.loads(requests.get(url, headers=HEADERS).content)
     isotherm_count = {}
     for isotherm in isotherms_list:
@@ -77,7 +84,7 @@ def regenerate_isotherm_library():
 
             for isotherm in article['isotherms']:
                 url = API_HOST + '/isodb/api/isotherm/' + isotherm[
-                    'filename'] + '.json'
+                    'filename'] + '.json' + url_suffix
                 isotherm_json = json.loads(
                     requests.get(url, headers=HEADERS).content)
                 # print(json.dumps(isotherm_json, sort_keys=True))
@@ -102,9 +109,9 @@ def regenerate_isotherm_library():
 def default_adsorption_units(input_units):
     """convert units from input units to bar"""
     # Generate units lookup tables from API
-    url = API_HOST + '/isodb/api/default-adsorption-unit-lookup.json'
+    url = API_HOST + '/isodb/api/default-adsorption-unit-lookup.json' + url_suffix
     default_units = json.loads(requests.get(url, headers=HEADERS).content)
-    url = API_HOST + '/isodb/api/adsorption-unit-lookup.json'
+    url = API_HOST + '/isodb/api/adsorption-unit-lookup.json' + url_suffix
     all_units = json.loads(requests.get(url, headers=HEADERS).content)
     # input -> ID -> output mapping
     units_id = next(item for item in all_units
@@ -124,8 +131,19 @@ def post_process(filename):
     # First-pass translation of keys based on maps provided by API
     for key in MAPS:
         for item in MAPS[key]['json']:
-            if isotherm[key].lower() == item['name'].lower():
-                isotherm[key] = item['shortname']
+            # print(isotherm[key], isotherm[key].lower())
+            # print(item['name'], item['name'].lower())
+            # if isotherm[key] == item['name']:
+            #     print('match!')
+            #     isotherm[key] = item['shortname']
+            #     print(isotherm[key])
+            # print('isotherm', isotherm)
+            # raise Exception('BREAK')
+            try:
+                if isotherm[key].lower() == item['name'].lower():
+                    isotherm[key] = item['shortname']
+            except:
+                pass
 
     # Check for adsorbate InChIKey(s)
     #  a. isotherm metadata
@@ -247,8 +265,9 @@ def post_process(filename):
         if key not in canonical_keys:
             del isotherm[key]
     # We're finally done, output!
-    #isotherm['filename'] = 'newfile.json'
-    #json_writer('newfile.json', isotherm)
-    #json_writer('../JSON_PACKAGE/PROCESSED_JSON/'+isotherm['filename']+'.json', isotherm)
+    # isotherm['filename'] = 'newfile.json'
+    # json_writer('newfile.json', isotherm)
+    isotherm['filename'] = filename.replace('.json','')
+    json_writer('./JSON_PACKAGE/'+isotherm['filename']+'.json', isotherm)
     #print('after')
     #pprint.pprint(isotherm)

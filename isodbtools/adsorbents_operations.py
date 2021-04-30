@@ -7,7 +7,7 @@ import time
 import copy
 import requests
 
-from .config import API_HOST, HEADERS, JSON_FOLDER, json_writer
+from .config import API_HOST, HEADERS, JSON_FOLDER, json_writer, TRACKER_SUFFIX
 
 
 def fix_adsorbent_id(adsorbent_input):
@@ -16,6 +16,7 @@ def fix_adsorbent_id(adsorbent_input):
     material_name = adsorbent_input['name'].lower().replace('%',
                                                             '%25').replace(
                                                                 ' ', '%20')
+    # Disable API usage tracking
     url = API_HOST + '/matdb/api/material/' + material_name + '.json&k=dontrackmeplease'
     # Attempt to resolve the name using the MATDB API
     try:
@@ -28,8 +29,14 @@ def fix_adsorbent_id(adsorbent_input):
     return output, check
 
 
-def regenerate_adsorbents():
+def regenerate_adsorbents(api_tracking=True):
     """Generate the entire ISODB library from the API"""
+    # Set or disable API usage tracking
+    if api_tracking:
+        url_suffix = ''
+    else:
+        url_suffix = TRACKER_SUFFIX
+
     # Create the JSON Library folder if necessary
     if not os.path.exists(JSON_FOLDER):
         os.mkdir(JSON_FOLDER)
@@ -40,14 +47,14 @@ def regenerate_adsorbents():
         os.mkdir(adsorbent_folder)
 
     # Generate a list of adsorbents from the MATDB API
-    url = API_HOST + '/matdb/api/materials.json'
+    url = API_HOST + '/matdb/api/materials.json' + url_suffix
     adsorbents = json.loads(requests.get(url, headers=HEADERS).content)
     print(len(adsorbents), 'Adsorbent Material Entries')
 
     # Extract each adsorbent in full form
     for (material_count, adsorbent) in enumerate(adsorbents):
         filename = adsorbent['hashkey'] + '.json'
-        url = API_HOST + '/matdb/api/material/' + filename
+        url = API_HOST + '/matdb/api/material/' + filename + url_suffix
         print(url)
         adsorbent_data = json.loads(requests.get(url, headers=HEADERS).content)
         # pprint.pprint(adsorbent_data)

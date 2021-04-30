@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+# -*- coding: utf-8 -*-
 """Module to provide operations related to isotherms"""
 import os
 import sys
@@ -109,9 +111,9 @@ def regenerate_isotherm_library(api_tracking=True):
 def default_adsorption_units(input_units):
     """convert units from input units to bar"""
     # Generate units lookup tables from API
-    url = API_HOST + '/isodb/api/default-adsorption-unit-lookup.json' + url_suffix
+    url = API_HOST + '/isodb/api/default-adsorption-unit-lookup.json&k=dontrackmeplease'
     default_units = json.loads(requests.get(url, headers=HEADERS).content)
-    url = API_HOST + '/isodb/api/adsorption-unit-lookup.json' + url_suffix
+    url = API_HOST + '/isodb/api/adsorption-unit-lookup.json&k=dontrackmeplease'
     all_units = json.loads(requests.get(url, headers=HEADERS).content)
     # input -> ID -> output mapping
     units_id = next(item for item in all_units
@@ -142,7 +144,7 @@ def post_process(filename):
             try:
                 if isotherm[key].lower() == item['name'].lower():
                     isotherm[key] = item['shortname']
-            except:
+            except ValueError:
                 pass
 
     # Check for adsorbate InChIKey(s)
@@ -267,7 +269,7 @@ def post_process(filename):
     # We're finally done, output!
     # isotherm['filename'] = 'newfile.json'
     # json_writer('newfile.json', isotherm)
-    isotherm['filename'] = filename.replace('.json','')
-    json_writer('./JSON_PACKAGE/'+isotherm['filename']+'.json', isotherm)
+    isotherm['filename'] = filename.replace('.json', '')
+    json_writer('./JSON_PACKAGE/' + isotherm['filename'] + '.json', isotherm)
     #print('after')
     #pprint.pprint(isotherm)

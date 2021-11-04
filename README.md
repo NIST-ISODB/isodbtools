@@ -17,7 +17,7 @@ Contributions to the script code base are welcome.
 
 To use this repository:
 1. Clone the repository locally
-2.. Enable pre-commit hooks
+2. Enable pre-commit hooks
     ```
     pip install -r .github/requirements.txt
     pre-commit install

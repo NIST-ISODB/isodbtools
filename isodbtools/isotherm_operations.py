@@ -15,6 +15,8 @@ from .config import API_HOST, HEADERS, JSON_FOLDER, DOI_MAPPING_PATH, doi_stub_r
 from .adsorbates_operations import fix_adsorbate_id
 from .adsorbents_operations import fix_adsorbent_id
 
+# pylint: disable-msg=unspecified-encoding
+
 
 def download_isotherm(isotherm):
     """Download a specific isotherm from the ISODB and format to ISODB specs"""
@@ -28,6 +30,7 @@ def download_isotherm(isotherm):
 
 def regenerate_isotherm_library(api_tracking=True):
     # pylint: disable-msg=too-many-locals
+    # pylint: disable-msg=consider-using-with
     """Generate the entire ISODB library from the API"""
     # Set or disable API usage tracking
     if api_tracking:
@@ -131,7 +134,7 @@ def post_process(filename):
     with open(filename, mode='r') as infile:
         isotherm = json.load(infile)
     # First-pass translation of keys based on maps provided by API
-    for key in MAPS:
+    for key in MAPS:  # pylint: disable-msg=consider-using-dict-items
         for item in MAPS[key]['json']:
             # print(isotherm[key], isotherm[key].lower())
             # print(item['name'], item['name'].lower())

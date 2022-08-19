@@ -13,6 +13,8 @@ import requests
 from .config import API_HOST, HEADERS, JSON_FOLDER, TEXTENCODE, doi_stub_rules, \
     json_writer, TRACKER_SUFFIX
 
+# pylint: disable=consider-using-f-string
+
 
 def regenerate_bibliography(api_tracking=True):
     """Generate the entire ISODB library from the API"""
@@ -240,8 +242,8 @@ def generate_bibliography(folder, simulate_api=False):
         biblio['adsorbates'] = adsorbates
         biblio['adsorbents'] = adsorbents
         biblio['temperature'] = temperatures
-        biblio['pressure_min'] = float('{0:.2f}'.format(min_pressure))  # pylint: disable=consider-using-f-string
-        biblio['pressure_max'] = float('{0:.2f}'.format(max_pressure))  # pylint: disable=consider-using-f-string
+        biblio['pressure_min'] = float('{0:.2f}'.format(min_pressure))
+        biblio['pressure_max'] = float('{0:.2f}'.format(max_pressure))
         biblio['title'] = title
         biblio['year'] = year
         biblio['journal'] = journal

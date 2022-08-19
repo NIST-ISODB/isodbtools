@@ -15,8 +15,6 @@ from .config import API_HOST, HEADERS, JSON_FOLDER, DOI_MAPPING_PATH, doi_stub_r
 from .adsorbates_operations import fix_adsorbate_id
 from .adsorbents_operations import fix_adsorbent_id
 
-# pylint: disable-msg=unspecified-encoding
-
 
 def download_isotherm(isotherm):
     """Download a specific isotherm from the ISODB and format to ISODB specs"""
@@ -60,7 +58,7 @@ def regenerate_isotherm_library(api_tracking=True):
     print(len(isotherms_list), 'Isotherm Files')
 
     # Create a CSV file with the DOI -> folder mapping
-    doi_mapping = open(DOI_MAPPING_PATH, mode='w')
+    doi_mapping = open(DOI_MAPPING_PATH, mode='w', encoding='utf-8')
     doi_mapping.write('DOI,  "DOI_Stub"\n')
 
     # Download and Organize the Isotherms
@@ -131,7 +129,7 @@ def post_process(filename):
     # pylint: disable-msg=too-many-branches
     # pylint: disable-msg=too-many-statements
     """Function to process raw isotherm to ISDOB upload format"""
-    with open(filename, mode='r') as infile:
+    with open(filename, mode='r', encoding='utf-8') as infile:
         isotherm = json.load(infile)
     # First-pass translation of keys based on maps provided by API
     for key in MAPS:  # pylint: disable-msg=consider-using-dict-items

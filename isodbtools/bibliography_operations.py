@@ -130,7 +130,7 @@ def generate_bibliography(folder, simulate_api=False):
     # Extract the unique dois
     dois = []
     for filename in filenames:
-        with open(filename, mode='r') as handle:
+        with open(filename, mode='r', encoding='utf-8') as handle:
             isotherm = json.load(handle)
         if isotherm['DOI'].lower() not in [x.lower() for x in dois]:
             dois.append(isotherm['DOI'])
@@ -202,7 +202,7 @@ def generate_bibliography(folder, simulate_api=False):
         isotherms = []
 
         for filename in filenames:
-            with open(filename, mode='r') as handle:
+            with open(filename, mode='r', encoding='utf-8') as handle:
                 isotherm = json.load(handle)
             if isotherm['DOI'].lower() == doi.lower():
 
@@ -217,10 +217,8 @@ def generate_bibliography(folder, simulate_api=False):
                     max_pressure = max(max_pressure, point['pressure'])
 
                 # Correction to pressure range
-                if min_pressure < 0.0:
-                    min_pressure = 0.00
-                if max_pressure > 1000.0:
-                    max_pressure = 1000.00
+                min_pressure = max(min_pressure, 0.0)
+                max_pressure = min(max_pressure, 1000.0)
 
                 isotherms.append(filename.split('/')[-1])
 
@@ -242,8 +240,8 @@ def generate_bibliography(folder, simulate_api=False):
         biblio['adsorbates'] = adsorbates
         biblio['adsorbents'] = adsorbents
         biblio['temperature'] = temperatures
-        biblio['pressure_min'] = float('{0:.2f}'.format(min_pressure))
-        biblio['pressure_max'] = float('{0:.2f}'.format(max_pressure))
+        biblio['pressure_min'] = float('{0:.2f}'.format(min_pressure))  # pylint: disable=consider-using-f-string
+        biblio['pressure_max'] = float('{0:.2f}'.format(max_pressure))  # pylint: disable=consider-using-f-string
         biblio['title'] = title
         biblio['year'] = year
         biblio['journal'] = journal

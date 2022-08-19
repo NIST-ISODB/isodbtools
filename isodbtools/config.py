@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable-msg=unspecified-encoding
 """Module to provide global variables for isodb-tools
 """
 import os

@@ -13,7 +13,7 @@ setuptools.setup(
     description='A small example package',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/dwsideriusNIST/isodbtools',
+    url='https://github.com/NIST-ISODB/isodbtools',
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
